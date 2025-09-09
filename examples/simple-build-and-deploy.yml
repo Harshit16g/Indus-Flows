@@ -36,7 +36,7 @@ jobs:
         run: ./gradlew bundleRelease
 
       - name: Deploy to Indus Appstore
-        uses: indusappstore/appstore-release@v1
+        uses: PhonePe/Indus-Flows@main
         with:
           operation_mode: 'deploy_only'
           file_path: 'app/build/outputs/bundle/release/app-release.aab'

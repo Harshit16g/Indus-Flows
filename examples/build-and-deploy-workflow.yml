@@ -112,7 +112,7 @@ jobs:
           rm -rf ./keystore-artifacts
 
       - name: Deploy to Indus Appstore
-        uses: indusappstore/appstore-release@v1
+        uses: PhonePe/Indus-Flows@main
         with:
           operation_mode: 'deploy_only'
           file_path: './build-artifacts/app-release.aab'
