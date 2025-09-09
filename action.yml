@@ -118,6 +118,11 @@ runs:
         INPUT_KEY_ALIAS: ${{ inputs.key_alias }}
         INPUT_KEY_PASSWORD: ${{ inputs.key_password }}
         INPUT_VERBOSE: ${{ inputs.verbose }}
+        INPUT_API_TOKEN: ${{ inputs.api_token }}
+        INPUT_PACKAGE_NAME: ${{ inputs.package_name }}
+        INPUT_KEYSTORE_ENCRYPTION_KEY: ${{ inputs.keystore_encryption_key }}
+        INPUT_KEYSTORE_VALIDATION: ${{ inputs.keystore_validation }}
+        INPUT_AUTO_DETECT_PACKAGE: ${{ inputs.auto_detect_package }}
     
     - name: Setup keystore
       if: inputs.file_type == 'aab'
