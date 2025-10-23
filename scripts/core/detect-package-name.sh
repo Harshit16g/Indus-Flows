@@ -32,5 +32,5 @@ if [[ -z "$PACKAGE_NAME" ]]; then
   exit 1
 fi
 
-echo "PACKAGE_NAME=$PACKAGE_NAME" >> $GITHUB_ENV
+echo "PACKAGE_NAME=$PACKAGE_NAME" >> "$GITHUB_ENV"
 echo "✓ Package name set to: $PACKAGE_NAME"

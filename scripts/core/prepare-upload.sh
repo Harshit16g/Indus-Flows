@@ -14,7 +14,7 @@ echo "📋 Preparing file for upload..."
 # Use the provided file path
 UPLOAD_FILE_PATH="${INPUT_FILE_PATH}"
 
-echo "UPLOAD_FILE_PATH=${UPLOAD_FILE_PATH}" >> $GITHUB_ENV
+echo "UPLOAD_FILE_PATH=${UPLOAD_FILE_PATH}" >> "$GITHUB_ENV"
 
 if [[ ! -f "${UPLOAD_FILE_PATH}" ]]; then
   echo "❌ Error: File not found at ${UPLOAD_FILE_PATH}"
@@ -24,16 +24,16 @@ fi
 BASE_URL="https://developer-api.indusappstore.com/devtools"
 case "$INPUT_FILE_TYPE" in
   "aab")
-    echo "API_URL=${BASE_URL}/aab/upgrade/$PACKAGE_NAME" >> $GITHUB_ENV
+    echo "API_URL=${BASE_URL}/aab/upgrade/$PACKAGE_NAME" >> "$GITHUB_ENV"
     ;;
   "apks")
-    echo "API_URL=${BASE_URL}/apks/upgrade/$PACKAGE_NAME" >> $GITHUB_ENV
+    echo "API_URL=${BASE_URL}/apks/upgrade/$PACKAGE_NAME" >> "$GITHUB_ENV"
     ;;
   *)
     # Default case (same as apk)
-    echo "API_URL=${BASE_URL}/apk/upgrade/$PACKAGE_NAME" >> $GITHUB_ENV
+    echo "API_URL=${BASE_URL}/apk/upgrade/$PACKAGE_NAME" >> "$GITHUB_ENV"
     ;;
 esac
 
 log_debug "✅ Upload preparation complete. File path: ${UPLOAD_FILE_PATH}"
-log_debug "✅ API URL set to: $(cat $GITHUB_ENV | grep API_URL | cut -d= -f2)"
+log_debug "✅ API URL set to: $(cat "$GITHUB_ENV" | grep API_URL | cut -d= -f2)"

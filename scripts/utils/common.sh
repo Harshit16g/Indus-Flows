@@ -45,7 +45,8 @@ log_debug() {
 
 log_section() {
     echo -e "\n${CYAN}🔹 $1${NC}"
-    echo "$(printf '=%.0s' {1..50})"
+    printf '=%.0s' {1..50}
+    echo
 }
 
 setup_temp_dir() {
@@ -209,9 +210,11 @@ format_file_size() {
 
 # Measure execution time
 measure_time() {
-    local start_time=$(date +%s)
+    local start_time
+    start_time=$(date +%s)
     "$@"
-    local end_time=$(date +%s)
+    local end_time
+    end_time=$(date +%s)
     local duration=$((end_time - start_time))
     
     log_debug "Operation completed in ${duration}s"

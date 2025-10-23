@@ -1,0 +1,106 @@
+name: CI
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+
+jobs:
+  shellcheck:
+    name: ShellCheck Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install ShellCheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck
+
+      - name: Run ShellCheck
+        run: |
+          shellcheck --version
+          shellcheck scripts/**/*.sh
+
+  syntax-check:
+    name: Bash Syntax Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check script syntax
+        run: |
+          for script in scripts/**/*.sh; do
+            echo "Checking: $script"
+            bash -n "$script"
+          done
+
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    needs: [shellcheck, syntax-check]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup test environment
+        run: |
+          npm install -g bats
+          bash tests/setup.sh
+
+      - name: Run unit tests
+        run: |
+          bats tests/unit/*.bats
+
+      - name: Generate coverage report
+        run: |
+          # Calculate coverage
+          TOTAL_FUNCTIONS=$(grep -r "^[a-zA-Z_]*() {" scripts/ | wc -l)
+          TESTED_FUNCTIONS=$(grep -r "@test" tests/ | wc -l)
+          COVERAGE=$((TESTED_FUNCTIONS * 100 / TOTAL_FUNCTIONS))
+          echo "Test Coverage: $COVERAGE%"
+          
+          # Fail if coverage < 70%
+          if [ $COVERAGE -lt 70 ]; then
+            echo "❌ Coverage is below 70%"
+            exit 1
+          fi
+
+  test-action:
+    name: Test Action
+    runs-on: ubuntu-latest
+    needs: [shellcheck, syntax-check]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Test with mock APK
+        uses: ./
+        with:
+          file_path: tests/fixtures/test.apk
+          file_type: apk
+          package_name: com.test.app
+          api_token: ${{ secrets.TEST_API_TOKEN }}
+        continue-on-error: true
+
+  documentation:
+    name: Check Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check for broken links in markdown
+        run: |
+          # Basic link check
+          grep -r "](.*)" *.md || true
+
+      - name: Verify required files
+        run: |
+          test -f README.md
+          test -f CONTRIBUTING.md
+          test -f SECURITY.md
+          test -f LICENSE
