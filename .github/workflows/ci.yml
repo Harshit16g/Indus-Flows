@@ -22,7 +22,8 @@ jobs:
       - name: Run ShellCheck
         run: |
           shellcheck --version
-          shellcheck --config=.shellcheckrc scripts/**/*.sh
+          # .shellcheckrc is automatically detected in the root
+          shellcheck scripts/**/*.sh
 
   syntax-check:
     name: Bash Syntax Check
@@ -60,7 +61,12 @@ jobs:
           # Calculate coverage
           TOTAL_FUNCTIONS=$(grep -r "^[a-zA-Z_]*() {" scripts/ | wc -l)
           TESTED_FUNCTIONS=$(grep -r "@test" tests/ | wc -l)
-          COVERAGE=$((TESTED_FUNCTIONS * 100 / TOTAL_FUNCTIONS))
+          # Avoid division by zero if no functions found
+          if [ $TOTAL_FUNCTIONS -eq 0 ]; then
+            COVERAGE=0
+          else
+            COVERAGE=$((TESTED_FUNCTIONS * 100 / TOTAL_FUNCTIONS))
+          fi
           echo "Test Coverage: $COVERAGE%"
           
           # Fail if coverage < 70%
@@ -84,7 +90,7 @@ jobs:
           file_type: apk
           package_name: com.test.app
           api_token: ${{ secrets.TEST_API_TOKEN }}
-        continue-on-error: true
+        continue-on-error: true # Keep this if you expect this step to fail during tests
 
   documentation:
     name: Check Documentation
@@ -95,12 +101,15 @@ jobs:
 
       - name: Check for broken links in markdown
         run: |
-          # Basic link check
+          # Basic link check (consider a more robust linter for real projects)
+          echo "Checking for markdown links..."
           grep -r "](.*)" *.md || true
 
       - name: Verify required files
         run: |
-          test -f README.md
-          test -f CONTRIBUTING.md
-          test -f SECURITY.md
-          test -f LICENSE
+          echo "Verifying required documentation files..."
+          test -f README.md || (echo "README.md not found" && exit 1)
+          test -f CONTRIBUTING.md || (echo "CONTRIBUTING.md not found" && exit 1)
+          test -f SECURITY.md || (echo "SECURITY.md not found" && exit 1)
+          test -f LICENSE || (echo "LICENSE not found" && exit 1)
+          echo "All required files found."
