@@ -22,7 +22,7 @@ jobs:
       - name: Run ShellCheck
         run: |
           shellcheck --version
-          shellcheck scripts/**/*.sh
+          shellcheck --config=.shellcheckrc scripts/**/*.sh
 
   syntax-check:
     name: Bash Syntax Check

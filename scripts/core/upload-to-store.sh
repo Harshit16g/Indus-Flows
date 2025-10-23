@@ -59,6 +59,7 @@ upload_to_api() {
 
 # Cleanup function
 cleanup_response() {
+    # shellcheck disable=SC2317  # This function is called via trap
     secure_remove "response.txt"
 }
 

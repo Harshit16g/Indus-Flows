@@ -51,11 +51,16 @@ http_status=$("${curl_cmd[@]}" 2>&1 | tail -n1)
 - ✅ Quoted `$GITHUB_ENV` variables in all scripts
 - ✅ Fixed variable declarations in `common.sh`
 - ✅ Removed useless echo in `log_section()` function
+- ✅ Fixed useless cat in `prepare-upload.sh` (SC2002)
+- ✅ Added shellcheck disable for trap function (SC2317)
+- ✅ Created `.shellcheckrc` to handle expected SC1091 warnings
 
 **Files Updated:**
 - `scripts/core/detect-package-name.sh`
 - `scripts/core/prepare-upload.sh`
+- `scripts/core/upload-to-store.sh`
 - `scripts/utils/common.sh`
+- `.shellcheckrc` (NEW)
 
 ---
 
@@ -187,6 +192,9 @@ trap cleanup_response EXIT
 - `tests/helper.bash` - Test helpers
 - `tests/unit/test_validation.bats` - Unit tests
 - `tests/fixtures/` - Test data directory
+- `.shellcheckrc` - ShellCheck configuration
+- `test-shellcheck.sh` - Local ShellCheck testing
+- `validate-fixes.sh` - Comprehensive validation script
 
 ### Documentation
 - `CRITICAL_FIXES_SUMMARY.md` - This summary

@@ -1,0 +1,6 @@
+# ShellCheck configuration for Indus-Flows
+# This file configures ShellCheck to ignore expected warnings
+
+# SC1091: Not following sourced files - this is expected behavior
+# We source utility scripts that are part of our codebase
+disable=SC1091
